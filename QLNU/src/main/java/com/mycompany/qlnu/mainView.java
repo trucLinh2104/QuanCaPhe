@@ -90,6 +90,16 @@ public class mainView {
     private JTextField[] fields;
     private RoundedJTextField search;
     private JLabel label;
+    private DefaultTableModel model; 
+    private boolean isEditMode = false;
+    private boolean  isDeleteMode = false;
+    public DefaultTableModel getModel() {
+        return model;
+    }
+
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
+    }
     boolean click = false;
     public JLabel getTrangthai() {
         return trangthai;
@@ -174,7 +184,7 @@ public class mainView {
          
         //Tạo icon back
         // Tạo một ImageIcon từ một tập tin hình ảnh
-        icon = new ImageIcon("/Users/truclinh/Documents/STORAGE/Java/NewFolder.1/QLNU/src/main/java/image/arrow-left-solid.png");
+        icon = new ImageIcon("src/main/java/image/arrow-left-solid.png");
         rzImage = icon.getImage().getScaledInstance(20, 30, Image.SCALE_SMOOTH);
         rzIcon = new ImageIcon(rzImage);
         
@@ -227,7 +237,7 @@ public class mainView {
         searchBtn.setBounds(430, 100, 40, 40);
         JLabel searchBtnLabel = new JLabel();
         searchBtnLabel.setOpaque(false);
-        ImageIcon searchbtn = new ImageIcon("/Users/truclinh/Documents/STORAGE/Java/NewFolder.1/QLNU/src/main/java/image/search.png");
+        ImageIcon searchbtn = new ImageIcon("src/main/java/image/search.png");
         Image resizesearchbtn = searchbtn.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizesearchbtn);
         searchBtnLabel.setIcon(resizedIcon);
@@ -246,42 +256,12 @@ public class mainView {
         });
         content.add(searchBtn);
         
-        // content Tabel
-        
-//         Object[][] data = {
-//            {"001", "Soda", "Coca Cola", "$1.50"},
-//            {"002", "Coffee", "Espresso", "$2.00"},
-//            {"003", "Tea", "Green Tea", "$1.00"},
-//            {"004", "Juice", "Orange Juice", "$2.50"},
-//            {"005", "Soda", "Coca Cola", "$1.50"},
-//            {"006", "Coffee", "Espresso", "$2.00"},
-//            {"007", "Tea", "Green Tea", "$1.00"},
-//            {"008", "Juice", "Orange Juice", "$2.50"},
-//            {"009", "Soda", "Coca Cola", "$1.50"},
-//            {"010", "Coffee", "Espresso", "$2.00"},
-//            {"011", "Tea", "Green Tea", "$1.00"},
-//            {"012", "Juice", "Orange Juice", "$2.50"},
-//            {"013", "Soda", "Coca Cola", "$1.50"},
-//            {"014", "Coffee", "Espresso", "$2.00"},
-//            {"015", "Tea", "Green Tea", "$1.00"},
-//            {"016", "Juice", "Orange Juice", "$2.50"},
-//            {"017", "Soda", "Coca Cola", "$1.50"},
-//            {"018", "Coffee", "Espresso", "$2.00"},
-//            {"019", "Tea", "Green Tea", "$1.00"},
-//            {"020", "Juice", "Orange Juice", "$2.50"},
-//            {"021", "Soda", "Coca Cola", "$1.50"},
-//            {"022", "Coffee", "Espresso", "$2.00"},
-//            {"023", "Tea", "Green Tea", "$1.00"},
-//            {"024", "Juice", "Orange Juice", "$2.50"}
-//        };
+      
         
         String[] columnNames = {"Mã nước uống", "Loại thức uống", "Tên nước uống", "Giá bán"};
-        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        model = new DefaultTableModel(columnNames, 0);
         table = new JTable(model);
-//        for (Object[] item: data){
-//            model.addRow(item);
-//        }
-//       
+ 
         table.setGridColor(coffeColor); // Đặt màu đường lưới
         table.setBorder(BorderFactory.createLineBorder(coffeColor)); // Đặt viền màu xanh
 
@@ -468,7 +448,59 @@ public class mainView {
                
             }
         });
-        
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (isEditMode) {
+                    System.out.println("edit");
+                    isEditMode = false; // Tắt chế độ chỉnh sửa sau khi hoàn thành
+                    table.setEnabled(true);
+                    Object value = table.getValueAt(table.getSelectedRow(), 0);
+                            System.out.println(value.toString());
+                            fields[0].setEnabled(false);
+                            saveBtn.setEnabled(true);
+                            saveBtn.addActionListener(new ActionListener() {
+                                public void actionPerformed(ActionEvent e) {
+                                    NuocUong nu = new NuocUong();
+                                    nu.setMa(value.toString());
+                                    nu.setLoai(fields[1].getText());
+                                    nu.setTen(fields[2].getText());
+                                    nu.setGia(fields[4].getText());
+                                    nu.setDvt(fields[3].getText()); 
+                                    fields[0].setEnabled(true);
+                                    try {
+                                        new NuocUongDAO().suaNuocUong(nu);
+                                        table.clearSelection();
+                                        table.setEnabled(false);
+                                    } catch (Exception ex){
+                                        ex.printStackTrace();
+                                    }
+                               
+                                }
+                            });
+                } else if (isDeleteMode) {
+                    System.out.println("delete");
+                    int selectedRow = table.getSelectedRow();
+                    String val = table.getValueAt(selectedRow, 0).toString();
+                    System.out.println(val);
+                   
+                    if (selectedRow != -1) {
+                        try {
+                            NuocUongDAO.xoaNuocUong(val);
+                         
+                        } catch (ClassNotFoundException ex) {
+                            Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (SQLException ex) {
+                            Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        table.clearSelection();
+                        table.repaint();
+                    }
+                    isDeleteMode = false; // Tắt chế độ xóa sau khi hoàn thành
+                    table.setEnabled(true);
+                }
+            }
+        });
         ImageIcon editBtnImage = new ImageIcon("src/main/java/image/edit.png");
         Image resizeEditBtn = editBtnImage.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon editBtn_ = new ImageIcon(resizeEditBtn);
@@ -482,40 +514,9 @@ public class mainView {
         editBtn.setIcon(editBtn_);
         editBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                isEditMode = true;
+                isDeleteMode = false;
                 table.setEnabled(true);
-                table.addMouseListener(new MouseAdapter() {
-                @Override
-                    public void mouseClicked(MouseEvent e) {
-                        
-                        int row = table.rowAtPoint(e.getPoint());
-                        int col = table.columnAtPoint(e.getPoint());
-                
-                        if (row >= 0 && col >= 0) {
-                            Object value = table.getValueAt(row, 0);
-                            System.out.println(value.toString());
-                            fields[0].setEnabled(false);
-                            saveBtn.setEnabled(true);
-                            saveBtn.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    NuocUong nu = new NuocUong();
-                                    nu.setMa(value.toString());
-                                    nu.setLoai(fields[1].getText());
-                                    nu.setTen(fields[2].getText());
-                                    nu.setGia(fields[4].getText());
-                                    nu.setDvt(fields[3].getText()); 
-                                  
-                                    try {
-                                        new NuocUongDAO().suaNuocUong(nu);
-                                        table.setEnabled(false);
-                                    } catch (Exception ex){
-                                        ex.printStackTrace();
-                                    }
-                               
-                                }
-                            });
-                        }    
-                    } 
-                });
             }
         });
         drinkTable.add(editBtn, gbc);
@@ -530,43 +531,14 @@ public class mainView {
         deleteBtn.setPreferredSize(new Dimension(60, 40));
         deleteBtn.setIcon(deleteBtn_);
         drinkTable.add(deleteBtn, gbc);
-        
+        table.setEnabled(true);
+
         deleteBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                click = true;
-                if(click){
-                    table.setEnabled(true);
-                    
-                }
-                System.out.println(click);
-                table.addMouseListener(new MouseAdapter() {
-                @Override
-                    public void mouseClicked(MouseEvent e) { 
-                        int row = table.rowAtPoint(e.getPoint());
-                        int col = table.columnAtPoint(e.getPoint());
-                        if (col >= 0) {
-                            Object value = table.getValueAt(row, 0);
-                            System.out.println(value.toString());
-                            deleteBtn.addActionListener(new ActionListener() {
-                                public void actionPerformed(ActionEvent e) {
-                                    click = false;
-                                    System.out.println(click);
-                                    if(click == false){
-                                        table.setEnabled(false); 
-                                    }
-                                    try {
-                                        NuocUongDAO.xoaNuocUong(value.toString());
-                                        
-                                    } catch (ClassNotFoundException ex) {
-                                        Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
-                                    } catch (SQLException ex) {
-                                        Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                }
-                            });
-                        }    
-                    } 
-                });
+            
+             public void actionPerformed(ActionEvent e) {
+                isEditMode = false;
+                isDeleteMode = true;
+                table.setEnabled(true);
             }
                 
         });
@@ -629,6 +601,22 @@ public class mainView {
         });
 
           frame.setVisible(true);
+    }
+
+    public JPanel getContent() {
+        return content;
+    }
+
+    public void setContent(JPanel content) {
+        this.content = content;
+    }
+
+    public JScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    public void setScrollPane(JScrollPane scrollPane) {
+        this.scrollPane = scrollPane;
     }
     
 }
