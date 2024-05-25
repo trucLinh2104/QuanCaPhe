@@ -90,6 +90,7 @@ public class mainView {
     private JTextField[] fields;
     private RoundedJTextField search;
     private JLabel label;
+    boolean click = false;
     public JLabel getTrangthai() {
         return trangthai;
     }
@@ -119,7 +120,8 @@ public class mainView {
         frame.setMaximumSize(new Dimension(1000, 600));
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+      
+        
         // Tạo một JLayeredPane để chứa các thành phần
         layeredPane = new JLayeredPane();
         headerPane = new JPanel();
@@ -451,10 +453,12 @@ public class mainView {
                nu.setTen(fields[2].getText());
                nu.setGia(fields[4].getText());
                nu.setDvt(fields[3].getText());  
+               
                ArrayList<NuocUong>ds;
                 try {
                     ds = new NuocUongDAO().layDS();
                     new NuocUongDAO().themNuocUong(ds,nu);
+                    table.setEnabled(false);
                     
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
@@ -464,6 +468,7 @@ public class mainView {
                
             }
         });
+        
         ImageIcon editBtnImage = new ImageIcon("src/main/java/image/edit.png");
         Image resizeEditBtn = editBtnImage.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon editBtn_ = new ImageIcon(resizeEditBtn);
@@ -478,10 +483,6 @@ public class mainView {
         editBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 table.setEnabled(true);
-                deleteBtn.setEnabled(false);
-                reloadBtn.setEnabled(false);
-                saveBtn.setEnabled(false);
-                addBtn.setEnabled(false);
                 table.addMouseListener(new MouseAdapter() {
                 @Override
                     public void mouseClicked(MouseEvent e) {
@@ -505,6 +506,7 @@ public class mainView {
                                   
                                     try {
                                         new NuocUongDAO().suaNuocUong(nu);
+                                        table.setEnabled(false);
                                     } catch (Exception ex){
                                         ex.printStackTrace();
                                     }
@@ -531,22 +533,30 @@ public class mainView {
         
         deleteBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                table.setEnabled(true);
+                click = true;
+                if(click){
+                    table.setEnabled(true);
+                    
+                }
+                System.out.println(click);
                 table.addMouseListener(new MouseAdapter() {
                 @Override
-                    public void mouseClicked(MouseEvent e) {
+                    public void mouseClicked(MouseEvent e) { 
                         int row = table.rowAtPoint(e.getPoint());
                         int col = table.columnAtPoint(e.getPoint());
-                        editBtn.setEnabled(false);
-                        saveBtn.setEnabled(false);
-                        addBtn.setEnabled(false);
                         if (col >= 0) {
                             Object value = table.getValueAt(row, 0);
                             System.out.println(value.toString());
                             deleteBtn.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
+                                    click = false;
+                                    System.out.println(click);
+                                    if(click == false){
+                                        table.setEnabled(false); 
+                                    }
                                     try {
                                         NuocUongDAO.xoaNuocUong(value.toString());
+                                        
                                     } catch (ClassNotFoundException ex) {
                                         Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
                                     } catch (SQLException ex) {
@@ -558,6 +568,7 @@ public class mainView {
                     } 
                 });
             }
+                
         });
         
         ImageIcon loadBtnImage = new ImageIcon("src/main/java/image/load.png");
@@ -574,6 +585,7 @@ public class mainView {
             public void actionPerformed(ActionEvent e) {
                 try {
                     NuocUongDAO.loadDS();
+                    table.setEnabled(false);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
@@ -616,7 +628,7 @@ public class mainView {
             }
         });
 
-        frame.setVisible(true);
+          frame.setVisible(true);
     }
     
 }

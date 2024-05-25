@@ -6,11 +6,13 @@ package DAO;
 import SqlServer.ConnectDB;
 import DTO.NuocUong;
 import com.mycompany.qlnu.*;
+import java.awt.Color;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Set;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -20,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
  * @author linh
  */
 public class NuocUongDAO {
+    private static mainView main = new mainView();
     public static ArrayList<NuocUong> layDS() throws ClassNotFoundException, SQLException{
         ArrayList <NuocUong> ds = new ArrayList<NuocUong>();
         String sql ="SELECT* FROM NUOCUONG";
@@ -44,10 +47,11 @@ public class NuocUongDAO {
     }
     public static void loadDS() throws ClassNotFoundException, SQLException{
         ArrayList<NuocUong> ds = layDS();
-        mainView main = new mainView();
         JLabel trangthai = main.getTrangthai();
         JTable table =  main.getTable();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
+        model.setRowCount(0);
+        
         for (NuocUong item : ds){
            Object[] rowData={
                item.getMa(),
@@ -61,9 +65,28 @@ public class NuocUongDAO {
         table.setModel(model);
         main.setTable(table);
     }
+    public static void loadDS(JTable a) throws ClassNotFoundException, SQLException{
+        ArrayList<NuocUong> ds = layDS();
+//        mainView main = new mainView();
+       
+        JTable table =  a;
+        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        for (NuocUong item : ds){
+           Object[] rowData={
+               item.getMa(),
+               item.getLoai(),
+               item.getTen(),
+               item.getGia()
+           };
+           model.addRow(rowData);
+        }
+        
+        table.setModel(model);
+       
+    }
     public static void loadDS(String mgs) throws ClassNotFoundException, SQLException{
         ArrayList<NuocUong> ds = layDS();
-        mainView main = new mainView();
+        main = new mainView();
         JTable table =  main.getTable();
         DefaultTableModel model = (DefaultTableModel) table.getModel();
         for (NuocUong item : ds){
@@ -82,6 +105,8 @@ public class NuocUongDAO {
         trangthai.setText(mgs);
     }
     
+   
+    
     public static NuocUong layNuocUongTheoTen(ArrayList<NuocUong>ds,String ma){
         for (NuocUong nuocUong : ds) {
             if (nuocUong.getMa().equalsIgnoreCase(ma)) {
@@ -92,7 +117,7 @@ public class NuocUongDAO {
         return null;
     }
         
-    public static void themNuocUong(ArrayList<NuocUong>ds,NuocUong nu) throws ClassNotFoundException, SQLException{
+    public static void themNuocUong(ArrayList<NuocUong>ds,NuocUong nu)throws ClassNotFoundException, SQLException{
         for (NuocUong nuocUong : ds) {
             if (nuocUong.getMa().equalsIgnoreCase(nu.getMa())) {
                 System.out.println("Mã đã tồn tại!");
@@ -101,12 +126,12 @@ public class NuocUongDAO {
                 ConnectDB con = new ConnectDB();
                 con.Open();
                 String sql="INSERT INTO NUOCUONG (maNuoc,loaiNuoc,tenNuoc,giaBan,donVi,soLuong) VALUES (N'"+nu.getMa()+"',N'"+nu.getLoai()+"',N'"+nu.getTen()+"',N'"+nu.getGia().toString()+"',N'"+nu.getDvt()+"',"+nu.getSoluong()+")";
-                JLabel a = new mainView().getTrangthai();
-                a.setText("Thành công");
+                
                 try {
                     int rs=con.executeUpdate(sql);
                     if(rs>0)System.out.println("Đã cập nhật thành công");
                     loadDS();
+                    main.getTable().setEnabled(false);
                     con.Close();
                 }
                 catch (Exception ex){
@@ -129,7 +154,8 @@ public class NuocUongDAO {
             try {
                 int rs=con.executeUpdate(sql);
                 if(rs>0)System.out.println("Đã cập nhật thành công");
-                loadDS("Thao tác thành công");
+                
+                main.getTable().setEnabled(false);
                 con.Close();
             }
             catch (Exception ex){
@@ -149,12 +175,13 @@ public class NuocUongDAO {
             
             try {
                 int rs=con.executeUpdate(sql);
-                JLabel a = new mainView().getTrangthai();
+                JLabel a = main.getTrangthai();
                 a.setText("Thành công");
                 if(rs>0){
                     System.out.println("Đã cập nhật thành công");
                 }else System.out.println("thất bại");
                 loadDS();
+                main.getTable().setEnabled(false);
                 con.Close();
             }
             catch (Exception ex){
@@ -171,9 +198,9 @@ public class NuocUongDAO {
         }else{
             String sql = "Select * from NUOCUONG where tenNuoc like N'%" + text +"%'";
             try{
-                mainView main = new mainView();
                 JTable table =  main.getTable();
                 DefaultTableModel model = (DefaultTableModel) table.getModel();
+                model.setRowCount(0);
                 ResultSet rs = con.executeQuery(sql);
                 while(rs.next()){
                     Object[] rowData={
@@ -189,7 +216,7 @@ public class NuocUongDAO {
             }catch(Exception ex){
                 ex.printStackTrace();
             }
- 
+            con.Close();
             
         }
     }    
