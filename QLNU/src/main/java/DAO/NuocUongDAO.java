@@ -120,7 +120,7 @@ public class NuocUongDAO {
                 int rs=con.executeUpdate(sql);
                 if(rs>0)System.out.println("Đã cập nhật thành công");
                
-                loadDS();
+             
             }
             catch (Exception ex){
                 ex.printStackTrace();

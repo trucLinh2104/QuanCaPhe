@@ -290,6 +290,8 @@ public class mainView {
                 if (isSelected) {
                 component.setBackground(Color.GRAY); // Màu nền khi hover
                 component.setForeground(Color.WHITE); // Màu chữ khi hover
+                } else {
+                    
                 }
                 
                 return component;
@@ -436,9 +438,13 @@ public class mainView {
                
                ArrayList<NuocUong>ds;
                 try {
+                    fields[0].setText("");
+                    fields[1].setText("");
+                    fields[2].setText(""); 
+                    fields[3].setText(""); 
+                    fields[4].setText("");
                     ds = new NuocUongDAO().layDS();
                     new NuocUongDAO().themNuocUong(ds,nu);
-                    table.setEnabled(false);
                     
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
@@ -457,7 +463,13 @@ public class mainView {
                     table.setEnabled(true);
                     Object value = table.getValueAt(table.getSelectedRow(), 0);
                             System.out.println(value.toString());
+                            fields[0].setText(table.getValueAt(table.getSelectedRow(), 0).toString());
                             fields[0].setEnabled(false);
+                            fields[1].setText(table.getValueAt(table.getSelectedRow(), 1).toString());
+                            fields[2].setText(table.getValueAt(table.getSelectedRow(), 2).toString()); 
+                            
+                            fields[4].setText(table.getValueAt(table.getSelectedRow(), 3).toString());
+                            
                             saveBtn.setEnabled(true);
                             saveBtn.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
@@ -469,6 +481,11 @@ public class mainView {
                                     nu.setDvt(fields[3].getText()); 
                                     fields[0].setEnabled(true);
                                     try {
+                                         fields[0].setText("");
+                                         fields[1].setText("");
+                                         fields[2].setText(""); 
+                                         fields[3].setText(""); 
+                                         fields[4].setText("");
                                         new NuocUongDAO().suaNuocUong(nu);
                                         table.clearSelection();
                                         table.setEnabled(false);
@@ -483,7 +500,7 @@ public class mainView {
                     int selectedRow = table.getSelectedRow();
                     String val = table.getValueAt(selectedRow, 0).toString();
                     System.out.println(val);
-                   
+                    model.removeRow(selectedRow);
                     if (selectedRow != -1) {
                         try {
                             NuocUongDAO.xoaNuocUong(val);
@@ -497,7 +514,7 @@ public class mainView {
                         table.repaint();
                     }
                     isDeleteMode = false; // Tắt chế độ xóa sau khi hoàn thành
-                    table.setEnabled(true);
+                    table.setEnabled(false);
                 }
             }
         });
@@ -531,8 +548,6 @@ public class mainView {
         deleteBtn.setPreferredSize(new Dimension(60, 40));
         deleteBtn.setIcon(deleteBtn_);
         drinkTable.add(deleteBtn, gbc);
-        table.setEnabled(true);
-
         deleteBtn.addActionListener(new ActionListener() {
             
              public void actionPerformed(ActionEvent e) {
@@ -557,7 +572,6 @@ public class mainView {
             public void actionPerformed(ActionEvent e) {
                 try {
                     NuocUongDAO.loadDS();
-                    table.setEnabled(false);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(mainView.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (SQLException ex) {
