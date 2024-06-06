@@ -9,90 +9,65 @@ package DTO;
  * @author linh
  */
     public class NuocUong{
-
-
-
-    public String getMa() {
-        return ma;
-    }
-
-    public void setMa(String ma) {
-        this.ma = ma;
-    }
-
-    public String getTen() {
-        return ten;
-    }
-
-    public void setTen(String ten) {
-        this.ten = ten;
-    }
-
-    public String getLoai() {
-        return loai;
-    }
-
-    public void setLoai(String loai) {
-        this.loai = loai;
-    }
-
-    public Float getGia() {
-        return gia;
-    }
-
-    public void setGia(String gia) {
-        this.gia = Float.parseFloat(gia);
-    }
-
-    public void setGia(Float gia) {
-        this.gia = gia;
-    }
-
-    public String getDvt() {
-        return dvt;
-    }
-
-    public void setDvt(String dvt) {
-        this.dvt = dvt;
-    }
-
-    public NuocUong(String ma, String ten, String loai, Float gia, String dvt, int soluong) {
-        this.ma = ma;
-        this.ten = ten;
-        this.loai = loai;
-        this.gia = gia;
-        this.dvt = dvt;
-        this.soluong = soluong;
-    }
-
-    public NuocUong() {
-        this.ma = "";
-        this.ten = "";
-        this.loai = "";
-        this.gia = 0F;
-        this.dvt = "";
-        this.soluong = 0;
-    }
-
-    @Override
-    public String toString() {
-        return "NuocUong{" + "ma=" + ma + ", ten=" + ten + ", loai=" + loai + ", gia=" + gia + ", dvt=" + dvt + ", soluong=" + soluong + '}';
-    }
-
-   
-    private String ma;
-    private String ten;
-    private String loai;
-    private Float gia;
-    private String dvt;
-    private int soluong;
-
-    public int getSoluong() {
-        return soluong;
-    }
-
-    public void setSoluong(int soluong) {
-        this.soluong = soluong;
-    }
-    
+        String maNuoc;
+	String loaiNuoc;
+	String tenNuoc;
+	float giaBan;
+	String donVi;
+	float soLuong;
+        public NuocUong() {
+		super();
+		this.maNuoc ="";
+		this.tenNuoc = "";
+		this.loaiNuoc="";
+		this.giaBan = 0F;
+		this.donVi = "";
+		this.soLuong = 0F;
+	}
+	public NuocUong(String maNuoc,String loaiNuoc, String tenNuoc, float giaBan, String donVi, float soLuong) {
+		super();
+		this.maNuoc = maNuoc;
+		this.tenNuoc = tenNuoc;
+		this.loaiNuoc=loaiNuoc;
+		this.giaBan = giaBan;
+		this.donVi = donVi;
+		this.soLuong = soLuong;
+	}
+	public String getMaNuoc() {
+		return maNuoc;
+	}
+	public void setMaNuoc(String maNuoc) {
+		this.maNuoc = maNuoc;
+	}
+	public String getTenNuoc() {
+		return tenNuoc;
+	}
+	public void setTenNuoc(String tenNuoc) {
+		this.tenNuoc = tenNuoc;
+	}
+	public float  getGiaBan() {
+		return giaBan;
+	}
+	public void setGiaBan(float giaBan) {
+		this.giaBan = giaBan;
+	}
+	public String getDonVi() {
+		return donVi;
+	}
+	public void setDonVi(String donVi) {
+		this.donVi = donVi;
+	}
+	public float getSoLuong() {
+		return soLuong;
+	}
+	public void setSoLuong(float soLuong) {
+		this.soLuong = soLuong;
+	}
+	
+	public String getLoaiNuoc() {
+		return loaiNuoc;
+	}
+	public void setLoaiNuoc(String loaiNuoc) {
+		this.loaiNuoc = loaiNuoc;
+	}
     }

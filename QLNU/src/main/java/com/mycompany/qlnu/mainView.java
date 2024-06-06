@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.qlnu;
-
+import com.mycompany.qlnu.*;
 import DAO.NuocUongDAO;
 import DTO.NuocUong;
 import java.awt.BorderLayout;
@@ -93,6 +93,7 @@ public class mainView {
     private DefaultTableModel model; 
     private boolean isEditMode = false;
     private boolean  isDeleteMode = false;
+    private JTableHeader header;
     public DefaultTableModel getModel() {
         return model;
     }
@@ -194,7 +195,35 @@ public class mainView {
         labelIconBack.setBorder(new EmptyBorder(10, 0, 10, 0));
         labelIconBack.setIcon(rzIcon);
         labelIconBack.setOpaque(false);
+        labelIconBack.addMouseListener(new MouseListener(){
+            @Override
+                    public void mouseClicked(MouseEvent e) {
+                        frame.dispose();
+                        MenuFr.main(null);
+  
+                    }
 
+            @Override
+            public void mousePressed(MouseEvent e) {
+              
+                
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                    
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+          
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+              
+            }
+        });
         // Tạo một JPanel để chứa JLabel có biểu tượng
         panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -234,11 +263,11 @@ public class mainView {
        
         searchBtn = new JButton();
         searchBtn.setBackground(new Color(255,228,212));
-        searchBtn.setBounds(430, 100, 40, 40);
+        searchBtn.setBounds(430, 98, 45, 45);
         JLabel searchBtnLabel = new JLabel();
         searchBtnLabel.setOpaque(false);
         ImageIcon searchbtn = new ImageIcon("src/main/java/image/search.png");
-        Image resizesearchbtn = searchbtn.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        Image resizesearchbtn = searchbtn.getImage().getScaledInstance(14, 14, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizesearchbtn);
         searchBtnLabel.setIcon(resizedIcon);
         searchBtn.add(searchBtnLabel);
@@ -269,7 +298,7 @@ public class mainView {
         
         table.setEnabled(false);
         //header
-        JTableHeader header = table.getTableHeader();
+        header = table.getTableHeader();
         header.setFont(header.getFont().deriveFont(Font.BOLD, 12)); // Đặt độ lớn và độ đậm cho ch
         header.setForeground(Color.BLACK);
         header.setBackground(new Color(255,228,212));
@@ -280,6 +309,7 @@ public class mainView {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+           
                 component.setForeground(Color.BLACK); // Đặt màu chữ cho tiêu đề các cột
                 // Đặt màu nền cho các dòng chẵn là màu xám nhạt
                 if (row % 2 == 0) {
@@ -293,6 +323,8 @@ public class mainView {
                 } else {
                     
                 }
+                
+                
                 
                 return component;
             }
@@ -409,6 +441,7 @@ public class mainView {
         saveBtn = new JButton();
         saveBtn.setForeground(coffeColor);
         saveBtn.setPreferredSize(new Dimension(60, 80));
+        saveBtn.setBackground(new Color(250,228,220));
         saveBtn.setIcon(saveBtn_);
         drinkTable.add(saveBtn, gbc);
         
@@ -424,17 +457,18 @@ public class mainView {
         gbc.insets = new Insets(5, 0, 5, 0);
         addBtn = new JButton();
         addBtn.setPreferredSize(new Dimension(60, 40));
+        addBtn.setBackground(new Color(250,228,220));
         addBtn.setForeground(coffeColor);
         addBtn.setIcon(addBtn_);
         drinkTable.add(addBtn, gbc);
         addBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                NuocUong nu = new NuocUong();
-               nu.setMa(fields[0].getText());
-               nu.setLoai(fields[1].getText());
-               nu.setTen(fields[2].getText());
-               nu.setGia(fields[4].getText());
-               nu.setDvt(fields[3].getText());  
+               nu.setMaNuoc(fields[0].getText());
+               nu.setLoaiNuoc(fields[1].getText());
+               nu.setTenNuoc(fields[2].getText());
+               nu.setGiaBan(Float.parseFloat(fields[4].getText()));
+               nu.setDonVi(fields[3].getText());  
                
                ArrayList<NuocUong>ds;
                 try {
@@ -474,11 +508,11 @@ public class mainView {
                             saveBtn.addActionListener(new ActionListener() {
                                 public void actionPerformed(ActionEvent e) {
                                     NuocUong nu = new NuocUong();
-                                    nu.setMa(value.toString());
-                                    nu.setLoai(fields[1].getText());
-                                    nu.setTen(fields[2].getText());
-                                    nu.setGia(fields[4].getText());
-                                    nu.setDvt(fields[3].getText()); 
+                                    nu.setMaNuoc(value.toString());
+                                    nu.setLoaiNuoc(fields[1].getText());
+                                    nu.setTenNuoc(fields[2].getText());
+                                    nu.setGiaBan(Float.parseFloat(fields[4].getText()));
+                                    nu.setDonVi(fields[3].getText());  
                                     fields[0].setEnabled(true);
                                     try {
                                          fields[0].setText("");
@@ -527,6 +561,7 @@ public class mainView {
         gbc.anchor = GridBagConstraints.WEST; 
         editBtn = new JButton();
         editBtn.setPreferredSize(new Dimension(60, 40));
+        editBtn.setBackground(new Color(250,228,220));
         editBtn.setForeground(coffeColor);
         editBtn.setIcon(editBtn_);
         editBtn.addActionListener(new ActionListener() {
@@ -546,6 +581,7 @@ public class mainView {
         deleteBtn = new JButton();
         deleteBtn.setForeground(coffeColor);
         deleteBtn.setPreferredSize(new Dimension(60, 40));
+        deleteBtn.setBackground(new Color(250,228,220));
         deleteBtn.setIcon(deleteBtn_);
         drinkTable.add(deleteBtn, gbc);
         deleteBtn.addActionListener(new ActionListener() {
@@ -566,6 +602,7 @@ public class mainView {
         reloadBtn = new JButton();
         reloadBtn.setForeground(coffeColor);
         reloadBtn.setPreferredSize(new Dimension(60, 40));
+        reloadBtn.setBackground(new Color(250,228,220));
         reloadBtn.setIcon(loadBtn_);
         drinkTable.add(reloadBtn, gbc);
         reloadBtn.addActionListener(new ActionListener() {

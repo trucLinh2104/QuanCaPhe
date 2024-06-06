@@ -1,26 +1,51 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package SqlServer;
-
 import java.sql.Connection;
+
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-/**
- *
- * @author linh
- */
-public class ConnectDB {
-    private Connection con;
+public class DataConnection {
+     public static Connection con;
+     public static Connection getConnection(){
+    	
+     try {
+    	 String URL = "jdbc:sqlserver://localhost;"
+                    + "database=QLCP;"
+                    + "encrypt=true;"
+                    + "trustServerCertificate=true;";
+            String USERNAME = "sa";
+            String PASSWORD = "Linh123456";
+    	con=DriverManager.getConnection(URL, USERNAME, PASSWORD);
+     } catch (SQLException e) {
+    	 e.printStackTrace();
+     }
+     return con;
+  }
+
+    
+    public void close(Connection c) {
+    	try {
+			if (c!=null) {
+				c.close();
+			}
+		} catch ( Exception e) {
+			e.printStackTrace();
+		}
+    }
+
+    
     public void Open() throws ClassNotFoundException, SQLException{
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String connectionUrl = "jdbc:sqlserver://localhost;database=QLCP;encrypt=true;trustServerCertificate=true;user=sa;password=Linh123456";
+             String connectionUrl = "jdbc:sqlserver://localhost;"
+                    + "database=QLCP;"
+                    + "encrypt=true;"
+                    + "trustServerCertificate=true;"
+                    + "user=sa;"
+                    + "password=Linh123456";
             con = DriverManager.getConnection(connectionUrl);
             System.out.println("Connected to SQL Server!"); 
         } catch (ClassNotFoundException e) {
@@ -76,6 +101,7 @@ public class ConnectDB {
         }
         return n;
     }
+    
     
     
 }
