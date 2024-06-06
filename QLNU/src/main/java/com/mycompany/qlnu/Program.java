@@ -101,7 +101,7 @@ public class Program extends JFrame {
 
 		Color coffeColor = new Color(51, 20, 1, 207);
 		JPanel backGround = new JPanel() {
-			private ImageIcon backGroundImage = new ImageIcon("src/main/java/image/backGround.jpg");;
+			private ImageIcon backGroundImage = new ImageIcon("src/main/java/image/coffee.jpg");;
 			private Image resizeImg = backGroundImage.getImage();
             @Override
             protected void paintComponent(Graphics g) {
